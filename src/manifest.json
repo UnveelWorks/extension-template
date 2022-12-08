@@ -1,0 +1,43 @@
+{
+    "name": "NAME",
+    "short_name": "NAME",
+    "description": "DESCRIPTION",
+    "homepage_url": "http://chrome.google.com/webstore",
+    "version": "0.0.1",
+    "version_name": "0.0.1",
+    "manifest_version": 3,
+    "default_locale": "en",
+    "minimum_chrome_version": "88",
+    "permissions": [],
+    "host_permissions": ["<all_urls>"],
+    "icons": {
+        "32": "assets/images/logo_32.png",
+        "48": "assets/images/logo_48.png",
+        "128": "assets/images/logo_128.png"
+    },
+    "web_accessible_resources": [
+        {
+            "resources": ["css/*", "assets/*", "vendors/*"],
+            "matches": ["<all_urls>"]
+        }
+    ],
+    "content_scripts": [
+        {
+            "matches": ["https://*/*", "http://*/*", "file:///*"],
+            "js": ["js/cs.js"]
+        }
+    ],
+    "background": {
+        "service_worker": "js/bg.js"
+    },
+    "action": {
+        "default_icon": {
+            "16": "assets/images/logo_16.png",
+            "24": "assets/images/logo_24.png",
+            "32": "assets/images/logo_32.png",
+            "48": "assets/images/logo_48.png"
+        },
+        "default_title": "NAME",
+        "default_popup": "popup.html"
+    }
+}

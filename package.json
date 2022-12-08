@@ -1,8 +1,8 @@
 {
 	"name": "extension-template",
+	"short_name": "extension-template",
 	"version": "1.0.0",
-	"description": "",
-	"main": "index.js",
+	"description": "Use this repo as a template",
 	"scripts": {
 		"build": "gulp --prod",
 		"watch": "gulp watch --dev",

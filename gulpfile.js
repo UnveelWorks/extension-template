@@ -101,13 +101,16 @@ const locale = (language, done = _ => true) =>
 
 const copyManifest = done => {
 
-    const {version} = pkg;
+    const { name, short_name, description, version } = pkg;
 
     const performChange = (content) => 
     {
         let mft = JSON.parse(content);
 
-        mft.version = version; // use version from package
+        mft.name = name;
+        mft.short_name = short_name;
+        mft.description = description;
+        mft.version = version;
         mft.version_name = version;
 
         if (isFirefox && mft.firefox) mft = {...mft, ...mft.firefox};

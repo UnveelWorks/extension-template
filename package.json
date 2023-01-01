@@ -5,9 +5,9 @@
 	"description": "Use this repo as a template",
 	"scripts": {
 		"build": "gulp --prod",
-		"watch": "gulp watch --dev",
+		"dev": "gulp watch --dev",
 		"build:firefox": "gulp --firefox --prod",
-		"watch:firefox": "gulp watch --firefox --dev"
+		"dev:firefox": "gulp watch --firefox --dev"
 	},
 	"repository": {
 		"type": "git",

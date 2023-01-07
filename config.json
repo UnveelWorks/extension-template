@@ -6,13 +6,16 @@
     "manifest": "./src/manifest.json",
     "html": "./src/**/*.html",
     "assets": ["./assets/**/*", "!./assets/locales", "!./assets/locales/**/*"],
-    "js": "./src/**/*.js",
+    "js": ["./src/**/*.js", "./src/**/*.jsx"],
     "js_bundles": [
         
     ],
     "scss": "./src/**/*.scss",
     "scss_bundles": [
         
+    ],
+    "tailwind_bundles": [
+
     ],
     "copy": [],
     "locales_dir": "./assets/locales/",

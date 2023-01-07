@@ -5,6 +5,9 @@ const GulpChange = require("gulp-change");
 const Plugins = require("gulp-load-plugins")();
 const { createGulpEsbuild } = require('gulp-esbuild');
 const Sass = require("gulp-sass")(require("sass"));
+const TailwindCSS = require('tailwindcss');
+const PostCSS = require('gulp-postcss');
+const Autoprefixer = require("autoprefixer");
 const argv = require('yargs').argv;
 const { prod: isProd, firefox: isFirefox } = argv;
 const pkg = require("./package.json");
@@ -72,6 +75,28 @@ const style = ({src, name, platform}, done = _ => true) =>
         .pipe(Gulp.dest(config.dist))
         .on('end', done);
 };
+
+const tailwind = ({src, name, platform}, done = _ => true) => 
+{
+    if (!checkPlatform(platform)) return Gulp.src(src).on('end', done);
+
+    const plugs = [
+        TailwindCSS("./tailwind.config.js"),
+        Autoprefixer
+    ];
+
+    return Gulp.src(src)
+        .pipe(PostCSS(plugs, {}))
+        .pipe(Plugins.concat(`${name}.css`))
+        .pipe(Plugins.cleanCss())
+        .pipe(Plugins.rename((path) => 
+        {
+            path.dirname = '';
+            path.basename = name;
+        }))
+        .pipe(Gulp.dest(config.dist))
+        .on('end', done);
+}
 
 const copy = (src, done = _ => true) => 
 {
@@ -153,6 +178,7 @@ const buildHtml = done =>
 
 const scripts = config.js_bundles.map(obj => dynamicFunc(_ => script(obj), `${obj.name}.js`));
 const styles = config.scss_bundles.map(obj => dynamicFunc(_ => style(obj), `${obj.name}.css`));
+const tailwindStyles = config.tailwind_bundles.map(obj => dynamicFunc(_ => tailwind(obj), `${obj.name}.css`));
 const locales = config.locales_list.map(lang => dynamicFunc(_ => locale(lang), `locale ${lang}`));
 const copies = ensureArray(config.copy).map(obj => dynamicFunc(_ => copy(obj), `copy ${obj}`));
 
@@ -170,6 +196,7 @@ const build = Gulp.series(
     Gulp.parallel(
         ...scripts,
         ...styles,
+        ...tailwindStyles,
         ...copies,
         ...locales,
         copyManifest,
@@ -182,8 +209,11 @@ const build = Gulp.series(
 const watch = () => 
 {
     console.log('[1m[33mWatching...[39m[22m');
-    if (scripts.length) Gulp.watch(ensureArray(config.js), Gulp.parallel(...scripts));
-    if (styles.length) Gulp.watch(ensureArray(config.scss), Gulp.parallel(...styles));
+
+    const tailwindBundles = tailwindStyles.length ? tailwindStyles : []; 
+    
+    if (scripts.length) Gulp.watch(ensureArray(config.js), Gulp.parallel([...scripts, ...tailwindBundles]));
+    if (styles.length) Gulp.watch(ensureArray(config.scss), Gulp.parallel([...styles, ...tailwindBundles]));
     if (copies.length) Gulp.watch(ensureArray(config.copy), Gulp.parallel(...copies));
     if (config.locales_list.length) Gulp.watch(config.locales_dir + '**/*.json', Gulp.parallel(...locales));
     Gulp.watch(config.manifest, copyManifest);

@@ -1,11 +1,11 @@
 'use strict';
 import Browser from './browser';
 
-function send(action, message = {}, tabId)
+function send(action, data = {}, tabId)
 {
-    message.action = action;
+    const message = { action, data };
     if (tabId) Browser.sendMessageToTab(tabId, message);
-    else Browser.sendMessage(message);  
+    else Browser.sendMessage(message);
 }
 
 function listen(callback)

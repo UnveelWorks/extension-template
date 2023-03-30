@@ -13,7 +13,7 @@ function listen(callback)
     const listener = (message, sender, sendResponse) => 
     {
         sendResponse({});
-        callback(message, sender);
+        callback(message.action, message.data, sender);
         return true;
     }
 

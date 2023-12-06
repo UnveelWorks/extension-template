@@ -4,6 +4,7 @@ const Del = require("del");
 const GulpChange = require("gulp-change");
 const Plugins = require("gulp-load-plugins")();
 const { createGulpEsbuild } = require('gulp-esbuild');
+const Alias = require("esbuild-plugin-alias");
 const Sass = require("gulp-sass")(require("sass"));
 const TailwindCSS = require('tailwindcss');
 const PostCSS = require('gulp-postcss');
@@ -42,7 +43,15 @@ const script = ({ src, name, platform }, done = _ => true) =>
         outfile: `${name}.js`,
         bundle: true,
         sourcemap: isProd ? false : "linked",
-        minify: isProd ? true : false
+        minify: isProd ? true : false,
+        plugins: [
+            Alias({
+                "react": require.resolve("preact/compat"),
+                "react-dom/test-utils": require.resolve("preact/test-utils"),
+                "react-dom": require.resolve("preact/compat"),
+                "react/jsx-runtime": require.resolve("preact/jsx-runtime")
+            })
+        ]
     };
 
     return Gulp.src(src)
@@ -126,13 +135,13 @@ const locale = (language, done = _ => true) =>
 
 const copyManifest = done => {
 
-    const { name, short_name, description, version } = pkg;
+    const { full_name, short_name, description, version } = pkg;
 
     const performChange = (content) => 
     {
         let mft = JSON.parse(content);
 
-        mft.name = name;
+        mft.name = full_name;
         mft.short_name = short_name;
         mft.description = description;
         mft.version = version;
@@ -217,7 +226,7 @@ const watch = () =>
     if (copies.length) Gulp.watch(ensureArray(config.copy), Gulp.parallel(...copies));
     if (config.locales_list.length) Gulp.watch(config.locales_dir + '**/*.json', Gulp.parallel(...locales));
     Gulp.watch(config.manifest, copyManifest);
-    Gulp.watch(ensureArray(config.html), buildHtml);
+    Gulp.watch(ensureArray(config.html), Gulp.parallel(buildHtml, ...tailwindBundles));
     Gulp.watch(ensureArray(config.assets), copyAssets);
 };
 

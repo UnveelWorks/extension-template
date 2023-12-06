@@ -1,13 +1,19 @@
 {
 	"name": "extension-template",
+	"full_name": "Extension Template",
 	"short_name": "extension-template",
 	"version": "1.0.0",
+	"version_name": "1.0.0",
 	"description": "Use this repo as a template",
+	"types": "@types/chrome",
 	"scripts": {
 		"build": "gulp --prod",
-		"dev": "gulp watch --dev",
+		"watch": "gulp watch --dev",
+		"dev": "run-p watch tsc",
 		"build:firefox": "gulp --firefox --prod",
-		"dev:firefox": "gulp watch --firefox --dev"
+		"watch:firefox": "gulp watch --firefox --dev",
+		"dev:firefox": "run-p watch:firefox tsc",
+		"tsc": "tsc --noEmit --watch"
 	},
 	"repository": {
 		"type": "git",
@@ -20,6 +26,7 @@
 	},
 	"homepage": "https://github.com/UnveelWorks/extension-template#readme",
 	"devDependencies": {
+		"@types/chrome": "^0.0.253",
 		"autoprefixer": "^10.4.13",
 		"del": "6.0.0",
 		"gulp": "^4.0.2",
@@ -36,8 +43,10 @@
 		"gulp-sass": "^5.1.0",
 		"gulp-zip": "^5.1.0",
 		"jsx-pragmatic": "^2.0.22",
+		"npm-run-all": "^4.1.5",
 		"sass": "^1.56.1",
 		"tailwindcss": "^3.2.4",
+		"typescript": "^5.3.2",
 		"yargs": "^17.6.2"
 	},
 	"overrides": {

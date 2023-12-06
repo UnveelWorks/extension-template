@@ -54,5 +54,8 @@
 			"chokidar": "3.5.3",
 			"glob-parent": "6.0.2"
 		}
+	},
+	"dependencies": {
+		"preact": "^10.19.2"
 	}
 }

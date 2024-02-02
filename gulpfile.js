@@ -6,9 +6,10 @@ const Plugins = require("gulp-load-plugins")();
 const { createGulpEsbuild } = require('gulp-esbuild');
 const Alias = require("esbuild-plugin-alias");
 const Sass = require("gulp-sass")(require("sass"));
-const TailwindCSS = require('tailwindcss');
 const PostCSS = require('gulp-postcss');
+const TailwindCSS = require('tailwindcss');
 const Autoprefixer = require("autoprefixer");
+const CSSNano = require("cssnano");
 const argv = require('yargs').argv;
 const { prod: isProd, firefox: isFirefox } = argv;
 const pkg = require("./package.json");
@@ -75,7 +76,7 @@ const style = ({src, name, platform}, done = _ => true) =>
     return Gulp.src(src)
         .pipe(Sass().on('error', Sass.logError))
         .pipe(Plugins.concat(`${name}.css`))
-        .pipe(Plugins.cleanCss())
+        .pipe(PostCSS([CSSNano()]))
         .pipe(Plugins.rename((path) => 
         {
             path.dirname = '';
@@ -91,13 +92,13 @@ const tailwind = ({src, name, platform}, done = _ => true) =>
 
     const plugs = [
         TailwindCSS("./tailwind.config.js"),
-        Autoprefixer
+        Autoprefixer(),
+        CSSNano()
     ];
 
     return Gulp.src(src)
-        .pipe(PostCSS(plugs, {}))
+        .pipe(PostCSS(plugs))
         .pipe(Plugins.concat(`${name}.css`))
-        .pipe(Plugins.cleanCss())
         .pipe(Plugins.rename((path) => 
         {
             path.dirname = '';
